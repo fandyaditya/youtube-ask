@@ -1,22 +1,10 @@
-import { instance } from './index'
+import { instance } from './index.js'
 
-const connectionParam = {
-    youtube_api_token : process.env.YOUTUBE_API_TOKEN,
-}
+const CHUNK_LIMIT = 10
 
-const CHUNK_LIMIT = 5
-
-export const createYoutubeDb = async () => {
-    const database = await instance.Databases.createDatabase({
-        name: 'youtube',
-        engine: 'youtube',
-        params: connectionParam
-    });
-    return database;
-}
-
-export const getVideoById = async (id) => {
-    query = `SELECT * FROM youtube.videos WHERE id = '${id}'`
+export const getVideoById = async (link) => {
+    const id = parseLink(link)
+    const query = `SELECT * FROM youtubedb.videos WHERE video_id = '${id}'`
     const queryResult = await instance.SQL.runQuery(query)
 
     if (queryResult.rows.length < 0) {
@@ -26,29 +14,48 @@ export const getVideoById = async (id) => {
     return queryResult.rows[0]
 }
 
-export const generateSubtitleDocument = async (subtitle) => {
-    let concatedSubs = []
-    const documentFromSubtitle = subtitle.map((item, i) => {
-        if (i % CHUNK_LIMIT == 0) {
+export const generateEmbeddingDocs = (rawSubtitle, link) => {
+    const subtitle = JSON.parse(rawSubtitle)
+    
+    let concatedSubs = [];
+    let firstStartTime = 0;
+
+    const documents = subtitle.map((item, i) => {
+        item.start = parseFloat(item.start)
+        item.duration = parseFloat(item.duration)
+
+        if ( (i != 0 && i % CHUNK_LIMIT == 1) || i == 0) {
+            firstStartTime = item.start
+        }
+
+        if ( (i != 0 && i % CHUNK_LIMIT == 0) || i == subtitle.length - 1) {
             const documents = {
                 content: concatedSubs.join(' '),
                 metaData: {
-                    startTime: item.start,
-                    endTime: item.end,
+                    startTime: firstStartTime,
+                    endTime: item.start + item.duration,
+                    link: link
                 }
             }
+            //reset
+            concatedSubs = []
+            firstStartTime = 0
 
             return documents
         }
         concatedSubs.push(item.text)
-    })
+    }).filter(item => item != undefined)
 
-    return documentFromSubtitle
+    return documents
 }
 
-export const parseLink = (link) => {
+const parseLink = (link) => {
     const url = new URL(link)
+    if (!url.searchParams.has('v')) {
+        const pathname = url.pathname
+        const videoId = pathname.substring(1)
+        return videoId
+    }
     const videoId = url.searchParams.get('v')
-
     return videoId
 }

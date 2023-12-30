@@ -1,21 +1,14 @@
-import { instance } from './index'
-
-const connectionParam = {
-    "persist_directory": "chromadb/"
-}
-
-export const createChromaDb = async () => {
-    const database = await instance.Databases.createDatabase({
-        name: 'youtube-ask',
-        engine: 'chromadb',
-        params: connectionParam
-    });
-    return database;
-}
+import { instance } from './index.js'
+import mysql from 'mysql'
 
 export const insert = async (data) => {
-    const { content, metaData } = data
-    const insertQuery = `INSERT INTO youtube_ask_kb (content, meta_data) VALUES ('${content}', '${JSON.stringify(metaData)}')`
+    let insertQuery = `INSERT INTO youtube_ask_kb (content, meta_data) VALUES`
+    
+    //loop through the data and add to query
+    data.forEach((item) => {
+        const { content, metaData } = item
+        insertQuery += ` ('${mysql.escape(content)}', '${mysql.escape(JSON.stringify(metaData))}'),`
+    })
     const queryResult = await instance.SQL.runQuery(insertQuery)
 
     if (queryResult.error_message) {

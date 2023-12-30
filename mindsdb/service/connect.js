@@ -1,18 +1,19 @@
-// mindsdb/connect.js
 import MindsDB from 'mindsdb-js-sdk';
 
 export let instance = null;
 
 export const getInstance = async () => {
+
     try {
         if (!instance) {
-            await MindsDB.connect({
-                host: 'http://127.0.0.1:47334'
+            await MindsDB.default.connect({
+                host: process.env.MINDSDB_HOST
             });
-            instance = MindsDB;
+            instance = MindsDB.default;
         }
         return instance;
     } catch(error) {
-       return
+        console.log(error)
+        return
     }
 }

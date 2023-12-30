@@ -1,6 +1,7 @@
 import { Telegraf } from 'telegraf'
 import { message } from 'telegraf/filters'
-import { findUserIntent,calculateCaloriesOnImage } from '../llm/index.js'
+import { getVideoById, generateEmbeddingDocs} from '../mindsdb/service/index.js'
+import { insert } from '../mindsdb/service/index.js'
 
 export const Bot = new Telegraf(process.env.BOT_TOKEN)
 
@@ -13,10 +14,11 @@ Bot.command('quit', async (ctx) => {
 })
 
 Bot.on(message('text'), async (ctx) => {
-    console.log(ctx.from)
-    const intent = await findUserIntent(ctx.message.text)
-    console.log(intent)
-    console.log(ctx)
+    const video = await getVideoById(ctx.message.text)
+    const subtitleDocument = generateEmbeddingDocs(video.transcript, ctx.message.text)
+    const insertResult = insert(subtitleDocument)
+    // console.log(subtitleDocument)
+    console.log(insertResult)
     await ctx.reply(`Hello ${ctx.from.first_name}`)
 })
 

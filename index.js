@@ -1,8 +1,7 @@
-//import mindsdb es6
-import { getInstance } from './mindsdb';
-import express from 'express';
 import "dotenv/config.js";
+import express from 'express';
 import { Bot } from './telegram/index.js';
+import { getInstance } from './mindsdb/service/index.js';
 
 
 (async () => {
@@ -10,7 +9,8 @@ import { Bot } from './telegram/index.js';
     
     if (!mindsdb) {
         console.log('Failed to connect to mindsdb')
-        return;
+        //sigkill
+        process.exit(1)
     }
 })()
 const app = express();
