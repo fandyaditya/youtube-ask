@@ -32,9 +32,21 @@ PARAMETERS = {
 	"persist_directory": "chromadb/"
 };
 
+-- Connect to Youtube API
+CREATE DATABASE youtubedb
+WITH ENGINE = 'youtube',
+PARAMETERS = {
+  "youtube_api_token": "AIzxxx" --  your youtube api token
+};
 
--- create youtube_ask table
-CREATE TABLE chromadb.youtube_ask;
+
+
+-- create youtube_ask table, we need to spesify init data for chromadb collection can be created
+CREATE TABLE chromadb.youtube_ask (
+  select content, '{"data": "init data"}' as metadata, embeddings 
+  from openai_embedding_model
+  where content = 'init content'
+)
 
 
 --Create knowledge base
