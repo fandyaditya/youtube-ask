@@ -64,9 +64,15 @@ export const initSource = async (ctx) => {
         //reset last message
         ctx.session.lastAnswer = '';
         ctx.session.lastQuestion='';
+        ctx.session.video = ctx.payload;
 
         console.log(`Video ${ctx.payload} is inserted to vector`)
-        await ctx.reply(`Video ${ctx.payload} is digested, ask me about the video!`);
+        await ctx.reply(`Video ${ctx.payload} is digested, ask me about the video`);
     });
+
+     //reset last message
+     ctx.session.lastAnswer = '';
+     ctx.session.lastQuestion='';
+    ctx.session.video = ctx.payload;
     return await ctx.reply('Digesting video, please await...')
 }
