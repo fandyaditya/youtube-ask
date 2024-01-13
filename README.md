@@ -1,5 +1,5 @@
 # Local Prequiesite
-
+We need some preparation before running on local machine
 ## Telegram Bot
 
 - Create telegram bot, follow this instruction: https://core.telegram.org/bots/tutorial
@@ -53,4 +53,12 @@ npm install
 node index.js
 ```
 - And voila! Your local server is ready!
+
+# On Running Local Server
+- This bot only accept 3 commands:
+  - `/ask [youtube-video-link]` to set session of video that want to ask
+  - `/session` to check what current session
+  - `/help` to show available commands
+- Now go to telegram and search your bot name
+- And your bot is ready to use!
 
