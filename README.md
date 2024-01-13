@@ -1,4 +1,4 @@
-# Local Prequiesite
+# Local Prerequisite
 We need some preparation before running on local machine
 ## Telegram Bot
 
