@@ -16,7 +16,7 @@ We need some preparation before running on local machine
 
 ## Mindsdb
 
-- For mindsdb we need 2 credentials. First Youtube Api Key, and Open AI Api Key
+- For [Mindsdb](https://mindsdb.com/) we need 2 credentials. First Youtube Api Key, and Open AI Api Key
 
 ### Youtube API Key
 
@@ -31,7 +31,7 @@ We need some preparation before running on local machine
 - Cool now, you halfway done!
 
 ### Running mindsdb docker
-- Build docker images from [mindsdb](https://mindsdb.com/) dockerfile. You need to install [docker](https://docs.docker.com/engine/install/) first before do this.
+- Build docker images from mindsdb dockerfile. You need to install [docker](https://docs.docker.com/engine/install/) first before do this.
   ```
   # Build images
   docker build -t my_mindsdb ./lib/mindsdb
